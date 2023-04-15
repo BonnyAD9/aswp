@@ -2,7 +2,7 @@
 
 CONFIG_DIR=~/.config/aswp
 CONFIG_FILE=$CONFIG_DIR/.aswp
-VERSION="1.0.1"
+VERSION="1.0.2"
 
 CUR_SINK="$SINK1"
 CUR_PORT="$PORT1"
@@ -84,9 +84,10 @@ function swap() {
         NEW_PORT="$PORT1"
     fi
 
+    TAB=`printf '\t'`
     echo "Swapping to:
-        Sink: $NEW_SINK
-        Port: $NEW_PORT"
+${TAB}Sink: $NEW_SINK
+${TAB}Port: $NEW_PORT"
 
     pactl set-default-sink "$NEW_SINK" &&
         pactl set-sink-port "$NEW_SINK" "$NEW_PORT"
