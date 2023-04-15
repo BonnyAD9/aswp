@@ -2,6 +2,7 @@
 
 CONFIG_DIR=~/.config/aswp
 CONFIG_FILE=$CONFIG_DIR/.aswp
+VERSION="1.0.0"
 
 CUR_SINK="$SINK1"
 CUR_PORT="$PORT1"
@@ -142,9 +143,26 @@ SINK2='$SINK2'
 PORT2='$PORT2'" > "$CONFIG_FILE"
 }
 
+# prints the help
+function help_fun() {
+    echo "Welcome in aswp by BonnyAD9
+Version: $VERSION
+
+Usage:
+  aswp
+    Swaps the audio output devices
+
+  aswp config
+    Runs the interactive configuration
+
+  aswp help
+    Shows this help"
+}
+
 case "$1" in
 "") swap ;;
 config) config ;;
+help|-h|--help|-\?) help_fun ;;
 *)  echo "Invalid argument"
     exit 1
     ;;
