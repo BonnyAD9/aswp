@@ -1,7 +1,6 @@
 # aswp
 *aswp* stands for *audio swap*. This script uses `pactl` to swap between two
-audio devices. The devices are currently hard-coded into the script so you need
-to set them yourself if you want to use this script.
+audio devices. You can setup the devices by running `aswp config`.
 
 ## Why is this useful?
 You can bind shortcut to this script so you can swap your audio devices by
