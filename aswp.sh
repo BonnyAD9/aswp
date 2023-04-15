@@ -62,9 +62,15 @@ function get_active_port() {
     '
 }
 
-# get current sink
-CUR_SINK=`pactl get-default-sink`
-CUR_PORT=`get_active_port $CUR_SINK`
+# determines the currently default sink and its active port
+# the result is saved in the variables $CUR_SINK and $CUR_PORT
+# get_current_device
+function get_current_device() {
+    CUR_SINK=`pactl get-default-sink`
+    CUR_PORT=`get_active_port $CUR_SINK`
+}
+
+get_current_device
 
 if [[ "$CUR_SINK" == "$SINK1" && "$CUR_PORT" == "$PORT1" ]] ; then
     NEW_SINK="$SINK2"
@@ -78,5 +84,5 @@ echo "Swapping to:
     Sink: $NEW_SINK
     Port: $NEW_PORT"
 
-pactl set-default-sink "$NEW_SINK"
-pactl set-sink-port "$NEW_SINK" "$NEW_PORT"
+pactl set-default-sink "$NEW_SINK" &&
+    pactl set-sink-port "$NEW_SINK" "$NEW_PORT"
