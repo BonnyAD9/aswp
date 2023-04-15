@@ -20,7 +20,7 @@ function sed_escape() {
 # gets the information about sink
 # get_sink_info SINK_NAME
 function get_sink_info() {
-    _SINK_NAME=sed_escape <<<"$1"
+    _SINK_NAME=`sed_escape <<<"$1"`
     pactl list sinks | gawk '
         BEGIN {
             is_match = false;
@@ -28,24 +28,25 @@ function get_sink_info() {
         }
 
         # match start of new sink
-        /^Sink.*?$/ {
+        /^Sink.*$/ {
+            # exit if the name has already been matched
             if (is_match) {
-                printf("%s", sink_info);
                 exit 0;
             }
             sink_info = $0;
         }
 
         # find whether the sink has the searched name
-        /^\t.*?$/ {
-            sink_info = $0;
-            is_match = $0 ~ /\tName: '"$_SINK_NAME"'/;
+        /^\t.*$/ {
+            sink_info = sink_info "\n" $0;
+            is_match = is_match || $0 ~ /\tName: '"$_SINK_NAME"'/;
         }
 
         # exit with error if there is no sink with that name
         END {
             if (!is_match)
                 exit 1;
+            print sink_info;
         }
     '
 }
@@ -53,9 +54,22 @@ function get_sink_info() {
 # gets the active port of sink
 # get_active_port SINK_NAME
 function get_active_port() {
-
+    get_sink_info "$1" | gawk '
+        match($0, /^\tActive Port: (.*)$/, a) {
+            print a[1];
+            exit 0;
+        }
+    '
 }
 
 # get current sink
 CUR_SINK=`pactl get-default-sink`
-CUR_PORT=`get_port_of_sink $CUR_SINK`
+CUR_PORT=`get_active_port $CUR_SINK`
+
+if [[ "$CUR_SINK" == "$SINK1" && "$CUR_PORT" == "$PORT1" ]] ; then
+    pactl set-default-sink "$SINK2"
+    pactl set-sink-port "$SINK2" "$PORT2"
+else
+    pactl set-default-sink "$SINK1"
+    pactl set-sink-port "$SINK1" "$SINK2"
+fi
