@@ -18,3 +18,4 @@ a keybord shortcut.
 - `gawk` - GNU awk, used for getting the useful information from the `pactl`
    output
 - `sed` - used for escaping variables for regex patterns
+- `notify-send` - used for notifications
