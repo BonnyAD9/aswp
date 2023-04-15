@@ -71,5 +71,5 @@ if [[ "$CUR_SINK" == "$SINK1" && "$CUR_PORT" == "$PORT1" ]] ; then
     pactl set-sink-port "$SINK2" "$PORT2"
 else
     pactl set-default-sink "$SINK1"
-    pactl set-sink-port "$SINK1" "$SINK2"
+    pactl set-sink-port "$SINK1" "$PORT1"
 fi
