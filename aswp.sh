@@ -23,17 +23,29 @@ function get_sink_info() {
     _SINK_NAME=sed_escape <<<"$1"
     pactl list sinks | gawk '
         BEGIN {
+            is_match = false;
             sink_info = "";
         }
 
         # match start of new sink
         /^Sink.*?$/ {
+            if (is_match) {
+                printf("%s", sink_info);
+                exit 0;
+            }
             sink_info = $0;
         }
 
         # find whether the sink has the searched name
-        /^\tName: '"$_SINK_NAME"'$/ {
+        /^\t.*?$/ {
+            sink_info = $0;
+            is_match = $0 ~ /\tName: '"$_SINK_NAME"'/;
+        }
 
+        # exit with error if there is no sink with that name
+        END {
+            if (!is_match)
+                exit 1;
         }
     '
 }
