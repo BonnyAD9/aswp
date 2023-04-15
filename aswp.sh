@@ -2,7 +2,7 @@
 
 CONFIG_DIR=~/.config/aswp
 CONFIG_FILE=$CONFIG_DIR/.aswp
-VERSION="1.0.0"
+VERSION="1.0.1"
 
 CUR_SINK="$SINK1"
 CUR_PORT="$PORT1"
@@ -145,18 +145,40 @@ PORT2='$PORT2'" > "$CONFIG_FILE"
 
 # prints the help
 function help_fun() {
-    echo "Welcome in aswp by BonnyAD9
-Version: $VERSION
+    ESC=`printf "\e"`
 
-Usage:
-  aswp
+    RESET="$ESC[0m"
+
+    ITALIC="$ESC[3m"
+
+    DARK="$ESC[90m"
+    DGREEN="$ESC[32m"
+    DYELLOW="$ESC[33m"
+
+    RED="$ESC[91m"
+    GREEN="$ESC[92m"
+    YELLOW="$ESC[93m"
+    WHITE="$ESC[97m"
+
+    SIGNATURE="$ESC[38;2;250;50;170mB$ESC[38;2;240;50;180mo\
+$ESC[38;2;230;50;190mn$ESC[38;2;220;50;200mn$ESC[38;2;210;50;210my\
+$ESC[38;2;200;50;220mA$ESC[38;2;190;50;230mD$ESC[38;2;180;50;240m9$ESC[0m"
+    echo "Welcome in $GREEN${ITALIC}aswp$RESET by $SIGNATURE
+Version $VERSION
+
+${GREEN}Usage:$RESET
+  ${WHITE}aswp$RESET
     Swaps the audio output devices
 
-  aswp config
+  ${WHITE}aswp config$RESET
     Runs the interactive configuration
 
-  aswp help
-    Shows this help"
+  ${WHITE}aswp help$RESET
+    Shows this help
+
+${GREEN}Options:
+  $YELLOW-h  --help  -?$RESET
+    shows this help"
 }
 
 case "$1" in
