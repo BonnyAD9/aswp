@@ -1,10 +1,7 @@
 #!/usr/bin/bash
 
-# the two outputs to swap
-SINK1='alsa_output.pci-0000_28_00.4.analog-stereo'
-PORT1='analog-output-headphones'
-SINK2='alsa_output.pci-0000_28_00.4.analog-stereo'
-PORT2='analog-output-lineout'
+CONFIG_DIR=~/.config/aswp
+CONFIG_FILE=$CONFIG_DIR/.aswp
 
 CUR_SINK="$SINK1"
 CUR_PORT="$PORT1"
@@ -70,8 +67,12 @@ function get_current_device() {
     CUR_PORT=`get_active_port $CUR_SINK`
 }
 
-# swap the devices
+# swaps the devices specified in the config file
+# swap
 function swap() {
+    # the config file is just script with the variables
+    . $CONFIG_FILE || exit 1
+
     get_current_device
 
     if [[ "$CUR_SINK" == "$SINK1" && "$CUR_PORT" == "$PORT1" ]] ; then
@@ -90,4 +91,61 @@ function swap() {
         pactl set-sink-port "$NEW_SINK" "$NEW_PORT"
 }
 
-swap
+function config() {
+    echo "This will set up aswp. You need a way to set your audio outputs
+while this script is running. To cancel the process you can press Ctrl+C
+The first audio output you set will be the default to change to if neither of
+the two devices is selected.
+
+To continue, change your default audio output to the first device and press
+enter:"
+    read
+
+    get_current_device
+    SINK1="$CUR_SINK"
+    PORT1="$CUR_PORT"
+    echo "Device 1:
+    Sink: $SINK1
+    Port: $PORT1
+"
+
+    echo "Now change the default audio output to the second device and press
+enter:"
+    read
+
+    get_current_device
+    SINK2="$CUR_SINK"
+    PORT2="$CUR_PORT"
+    echo "Device 2:
+    Sink: $SINK2
+    Port: $PORT2
+"
+
+    echo "Press enter now to write the settings to the configuration file
+'$CONFIG_FILE'. All contets of that file will be overwritten:"
+
+    read
+
+    mkdir -p "$CONFIG_DIR"
+
+    # write the configuration
+    echo "#!/usr/bin/bash
+
+# this script is run every time the aswp script is run
+# this file is generated again every time 'awp config' is run
+
+# devices:
+SINK1='$SINK1'
+PORT1='$PORT1'
+
+SINK2='$SINK2'
+PORT2='$PORT2'" > "$CONFIG_FILE"
+}
+
+case "$1" in
+"") swap ;;
+config) config ;;
+*)  echo "Invalid argument"
+    exit 1
+    ;;
+esac
