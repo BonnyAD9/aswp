@@ -67,9 +67,16 @@ CUR_SINK=`pactl get-default-sink`
 CUR_PORT=`get_active_port $CUR_SINK`
 
 if [[ "$CUR_SINK" == "$SINK1" && "$CUR_PORT" == "$PORT1" ]] ; then
-    pactl set-default-sink "$SINK2"
-    pactl set-sink-port "$SINK2" "$PORT2"
+    NEW_SINK="$SINK2"
+    NEW_PORT="$PORT2"
 else
-    pactl set-default-sink "$SINK1"
-    pactl set-sink-port "$SINK1" "$PORT1"
+    NEW_SINK="$SINK1"
+    NEW_PORT="$PORT1"
 fi
+
+echo "Swapping to:
+    Sink: $NEW_SINK
+    Port: $NEW_PORT"
+
+pactl set-default-sink "$NEW_SINK"
+pactl set-sink-port "$NEW_SINK" "$NEW_PORT"
